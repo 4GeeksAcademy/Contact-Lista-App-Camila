@@ -11,8 +11,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					title: "SECOND",
 					background: "white",
 					initial: "white"
-				}
-			]
+				},
+
+			],
+			users: [],
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -37,9 +39,31 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				//reset the global store
 				setStore({ demo: demo });
-			}
-		}
-	};
+			},
+			usersList: () => {
+                fetch('https://playground.4geeks.com/contact/agendas/users', {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                })
+                .then(data => {
+                    setStore({ users: data.contacts });
+                    console.log(data.contacts);
+                })
+                .catch(error => {
+                    console.error('Error', error);
+                });
+            }
+        }
+    };
 };
 
 export default getState;
